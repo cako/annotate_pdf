@@ -43,7 +43,7 @@ able to provide a mask that I've been using. For
 now, one can obtain it
 [here](http://3diagramsperpage.files.wordpress.com/2011/07/mask.doc).
 (For some reason the author has to provide it in
-`.doc`, so open it and save it as a `.tex`).
+`.doc`, so open it and save its contents as a `.tex`).
 
 Then simply run
     
@@ -54,13 +54,13 @@ to the filename of `INPUT_PDF`. You are done!
 
 ### Options
 
-If, for some reason, you mask it too complicated to
+If, for some reason, your mask it too complicated to
 be rendered by a simple `pdflatex` compilation, you
 can run
 
     perl generate_mask.pl INPUT_PDF INPUT_MASK
 
-compile the PDF using whatever method want, and then
+compile the `.tex` using whatever method want, and then
 run
 
     perl -n annotate_pdf.pl INPUT_PDF INPUT_MASK
