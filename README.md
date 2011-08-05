@@ -73,7 +73,7 @@ to the filename of `INPUT_PDF`. You are done!
 ### Options
 
 If you want the leftover files from the pdflatex
-compilation run with option -a. 
+compilation run with option `-a`. 
 
 If, for some reason, your mask it too complicated to
 be rendered by a simple `pdflatex` compilation, you
