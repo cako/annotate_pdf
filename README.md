@@ -29,21 +29,39 @@ annotate PDFs.
 
 Requirements
 ------------
-* perl
-* pdftk
-* pdfinfo
+* [perl](http://www.perl.org/get.html)
+* [pdftk](http://www.pdflabs.com/docs/install-pdftk/)
+* [pdfinfo](http://www.foolabs.com/xpdf/) (Part of the xpdf utilities for PDF files)
 * pdflatex
 
+Installation
+------------
+The tricky part here is the installation of the requirements, and not the program itself.
+
+### Ubuntu
+
+    sudo apt-get install perl pdftk poppler-utils texlive
+
+### Windows
+
+    Download Strawberry Perl [here](http://strawberryperl.com/) and install it.
+    Download `pdftk` [here](http://strawberryperl.com/). To install it, copy
+    the two files (a `.exe` and a `.dll`) to the
+    `C:\WINDOWS\system32\` folder.
+    Download `pdfinfo` from
+    [here](http://www.foolabs.com/xpdf/download.html),
+    and copy `pdfinfo.exe` to the `C:\WINDOWS\system32\` folder.
+    Finally, install a LaTeX distribution such as
+    [Miktex](http://miktex.org/2.9/setup) if you
+    don't already have one.
+    
 Instructions
 ------------
 
 You will need a mask file, which will be used to
-stamp the PDF. Hopefully in the near future I'll be
-able to provide a mask that I've been using. For
-now, one can obtain it
-[here](http://3diagramsperpage.files.wordpress.com/2011/07/mask.doc).
-(For some reason the author has to provide it in
-`.doc`, so open it and save its contents as a `.tex`).
+stamp the PDF. The default mask is
+`default_mask.tex`. Edit it with your notes and
+save it to file `INPUT_MASK`.
 
 Then simply run
     
@@ -54,20 +72,19 @@ to the filename of `INPUT_PDF`. You are done!
 
 ### Options
 
+If you want the leftover files from the pdflatex
+compilation run with option -a. 
+
 If, for some reason, your mask it too complicated to
 be rendered by a simple `pdflatex` compilation, you
 can run
 
     perl generate_mask.pl INPUT_PDF INPUT_MASK
 
-compile the `.tex` using whatever method want, and then
-run
+then compile the `.tex` using whatever method want,
+and finally run
 
     perl -n annotate_pdf.pl INPUT_PDF INPUT_MASK
-
-Finally, one may simply omit the mask if it's named
-`INPUT_PDF` with `_mask` appended, or if it's named
-`default_mask.tex`.
 
 Please Contribute!
 ------------------

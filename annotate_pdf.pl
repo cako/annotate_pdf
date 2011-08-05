@@ -20,13 +20,14 @@
 #                                                                              #
 #         FILE:  annotate_pdf.pl                                               #
 #                                                                              #
-#        USAGE:  ./annotate_pdf.pl [-n] INPUT_PDF [INPUT_MASK]                 #
+#        USAGE:  ./annotate_pdf.pl [-n] [--no-aux] INPUT_PDF INPUT_MASK        #
 #                                                                              #
 #  DESCRIPTION:  This script stamps the INPUT_PDF file with the notes          #
 #                contained in the INPUT_MASK. If no mask is provided, the      #
 #                default mask will be used.                                    #
 #                                                                              #
-#      OPTIONS:  -n                                                            #
+#      OPTIONS:  -n         Do not run generate_mask.pl or pdflatex            #
+#                --no-aux   Remove auxiliary files
 # REQUIREMENTS:  pdftk, pdflatex                                               #
 #         BUGS:  ---                                                           #
 #        NOTES:  ---                                                           #
@@ -42,37 +43,64 @@ use strict;
 use warnings;
 use File::Spec;
 use File::Copy;
+use File::Basename;
 
 my $NO_COMPILE;
-if ($ARGV[0] eq "-n"){
-    $NO_COMPILE = 1;
+my $AUX;
+if (($ARGV[0] eq "-n") or ($ARGV[0] eq "-a")){
+    if ($ARGV[0] eq "-n"){
+        $NO_COMPILE = 1;
+        if ($ARGV[1] eq "-a"){
+            $AUX = 1;
+            shift @ARGV;
+        }
+    } else {
+        $AUX = 1;
+        if ($ARGV[1] eq "-n"){
+            $NO_COMPILE = 1;
+            shift @ARGV;
+        }
+    }
     shift @ARGV;
 }
+
 # File names
 my $file = $ARGV[0];
-my ($file_vol, $file_dir, undef) = File::Spec->splitpath($file);
-my $mask;
-if ($ARGV[1]){
-    $mask = $ARGV[1];
-} else {
-    $file =~ /(.+)\.pdf/;
-    $mask = $1 . "_mask.tex";
-    my $default_mask = File::Spec->catfile($file_dir, "default_mask.tex");
-    copy($default_mask, $mask) or die "Can't copy" unless (-e $mask);
-}
+die "No PDF given." unless ($file);
+die "PDF does not exist." unless (-e $file);
+
+my $mask = $ARGV[1];
+die "No mask given." unless ($mask);
+die "Mask does not exist." unless (-e $mask);
+
+my $file_dir = dirname($file);
+my $script_dir = dirname($0);
+
 $mask =~ /(.+)\.tex/;
 my $mask_pdf = $1 . ".pdf";
 
+unless ($NO_COMPILE){
+    print "\nGenerating $mask.\n";
+    my $generate_mask_file = File::Spec->catfile($script_dir, "generate_mask.pl");
+    system "perl", $generate_mask_file, $file, $mask;
+    print "Done.\n";
+
+    print "\nCompiling $mask.\n";
+    system "pdflatex", "--output-directory", $file_dir, $mask;
+    print "Done.\n";
+}
+
+print "\nStamping $file with $mask_pdf.\n";
 $file =~ /(.+)\./;
 my $output = $1 . "_annotated.pdf";
+system "pdftk", $file, "multistamp", File::Spec->catfile($file_dir, $mask_pdf), "output", $output;
+print "Done.\n";
 
-say $file_dir;
-say $mask;
-say $mask_pdf;
-print $output;
-
-unless ($NO_COMPILE){
-    system "perl generate_mask.pl '$file' '$mask'";
-    system "pdflatex --output-directory '$file_dir' '$mask'";
+unless($AUX and $NO_COMPILE){
+    print "\nRemoving auxiliary files.\n";
+    $mask =~ /(.+)\.tex/;
+    for my $aux ( "$1.aux", "$1.log", "$1.out", "$1.pdf" ){
+        unlink File::Spec->catfile($file_dir, $aux);
+    }
+    print "Done.\n";
 }
-system "pdftk '$file' multistamp '$mask_pdf' output '$output'";

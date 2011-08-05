@@ -1,0 +1,103 @@
+\documentclass[a4paper]{article} %use whatever documentclass you want, remember however to use the right PAPER SIZE!
+
+%------------ packages --------------------%
+
+\usepackage{amsmath}  
+\usepackage{amssymb}
+\usepackage{boxedminipage}
+\usepackage{xypic}
+\usepackage{hyperref}
+\usepackage{color}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}  
+
+\hypersetup{colorlinks=true, breaklinks=true, linkcolor=darkblue, menucolor=darkblue, urlcolor=darkblue} 
+
+
+\newcommand{\numberofpages}{9}
+\newcommand{\pagewidth}{595.276}
+\newcommand{\pagelength}{841.89}
+
+
+%----------- IMPORTANT! ------------------%
+%This lets you position your annotations anywhere on the page, without restrictions of page margins
+\usepackage{geometry}
+\geometry{papersize={\pagewidth pt,\pagelength pt}, total={\pagewidth pt,\pagelength pt}, scale=1}
+
+
+
+
+%---- These are the stamping comands------%
+
+\newcommand{\multistamp}[1]{%
+  \loop\unless\ifnum\value{page}>#1
+    \dowhatsonthispage
+  \repeat}
+
+\newcommand{\dowhatsonthispage}{%
+  \null\csname onthispage\thepage\endcsname\newpage}
+
+\newcommand{\putonpage}[2]{%
+  \expandafter\def\csname onthispage#1\endcsname{#2}}
+  
+%----------------------------------------%  
+
+
+
+\begin{document}
+
+%------------header----------------------%
+\pagestyle{empty} %no pagenumbers and titles%
+\thispagestyle{empty}
+%-------end header-----------------------%
+
+
+%put something on page 1
+\putonpage{1}{%
+
+%this will put up an annotation of width 2cm in the top left corner
+\vspace{0cm} \hspace{0cm}
+% 
+\begin{boxedminipage}[t]{10cm} 
+\scriptsize A little annotation for the top left corner! 
+\end{boxedminipage}
+
+%this will put a diagram at the bottom of the first page
+\vspace{560pt} 
+\hspace{100pt}
+%
+\begin{boxedminipage}[c]{400pt} 
+\[
+\xymatrix@+=1.55cm{ &\hdots \ar[r] & C_k \ar[r]^{d_k} \ar[d]^{g_k - f_k} \ar@{.>}[ld]^{h_k} & C_{k-1} \ar[r] \ar[d] \ar@{.>}[ld]^{h_{k-1}} & \hdots \\ \hdots \ar[r] & D_{k+1} \ar[r] & D_k \ar[r] & D_{k-1} \ar[r] & \hdots } 
+\]
+\end{boxedminipage}
+}
+
+	
+%put something on page 2
+\putonpage{2}{%
+
+\vspace{15cm} \hspace{5cm}
+%
+\begin{boxedminipage}{10cm}
+\begin{center}
+Thank you for using this template! Visit \\
+\href{http://3diagramsperpage.wordpress.com}{http://3diagramsperpage.wordpress.com} \\
+for more information! 
+\end{center}
+\end{boxedminipage}
+}
+
+\putonpage{3}{
+    \vspace{1cm}\hspace{3cm}
+    \begin{boxedminipage}{5cm}
+    \begin{center}
+    \textcolor{red}{
+    \[\int_{-\infty}^{\infty} e^{x^2}\, dx = \sqrt\pi\]
+    }
+    \end{center}
+    \end{boxedminipage}
+}
+
+\multistamp{\numberofpages}
+
+\end{document}

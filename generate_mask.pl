@@ -20,7 +20,7 @@
 #                                                                              #
 #         FILE:  generate_mask.pl                                              #
 #                                                                              #
-#        USAGE:  ./generate_mask.pl INPUT_PDF [INPUT_MASK]                     #
+#        USAGE:  ./generate_mask.pl INPUT_PDF INPUT_MASK                       #
 #                                                                              #
 #  DESCRIPTION:  This script edits the default mask contained in file          #
 #                INPUT_PDF_mask.tex to fit the INPUT_PDF. Optionally, a        #
@@ -40,7 +40,7 @@
 #     REVISION:  ---                                                           #
 #==============================================================================#
 
-use 5.010;
+#use 5.010;
 use strict;
 use warnings;
 use File::Spec;
@@ -54,16 +54,15 @@ $paper_sizes{"A4"} = "a4paper";
 
 # File names
 my $file = $ARGV[0];
-my $mask;
-    if ($ARGV[1]){
-    $mask = $ARGV[1];
-} else {
-    $file =~ /(.+)\.pdf/;
-    $mask = $1 . "_mask.tex";
-    my ($default_mask_vol, $default_mask_dir, undef) = File::Spec->splitpath($file);
-    my $default_mask = File::Spec->catfile($default_mask_dir, "default_mask.tex");
-    copy($default_mask, $mask) or die "Can't copy" unless (-e $mask);
-}
+die "No PDF given." unless ($file);
+die "PDF does not exist." unless (-e $file);
+
+my $mask = $ARGV[1];
+die "No mask given." unless ($mask);
+die "Mask does not exist." unless (-e $mask);
+
+my $file_dir = dirname($file);
+my $script_dir = dirname($0);
 
 # Page numbers
 my $pages_data;
@@ -92,16 +91,17 @@ my $paper;
 $paper = $+{paper} if $+{paper};
 my $doc_opts;
 if ($paper_sizes{$paper}){
-    $doc_opts = "\[$paper_sizes{$paper}\]"
+    $doc_opts = "\[$paper_sizes{$paper}\]";
 } else {
-    $doc_opts = ""
+    $doc_opts = "";
 }
 
-open MASK_IN, '<', $mask or die "Cannot open file";
+print "\nUpdating dimensions in $mask.\n";
+open MASK_IN, '<', $mask or die "Cannot open $mask.";
 my @mask_in = <MASK_IN>;
 close MASK_IN;
 
-open MASK_OUT, '>', $mask or die "Cannot open file";
+open(MASK_OUT, '>', $mask) or die "Cannot open $mask.";
 
 for (@mask_in){
     s/numberofpages\}\{\d*}/numberofpages\}\{$pages\}/g;
@@ -111,3 +111,4 @@ for (@mask_in){
     print MASK_OUT $_;
 }
 close MASK_OUT;
+print "Done.\n";
