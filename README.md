@@ -88,3 +88,5 @@ and finally run
 
 Please Contribute!
 ------------------
+This code is licensed under the GNU General Public
+License version 3. Go ahead, fork it and improve it!
