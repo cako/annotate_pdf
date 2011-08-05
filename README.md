@@ -81,7 +81,7 @@ can run
 
     perl generate_mask.pl INPUT_PDF INPUT_MASK
 
-then compile the `.tex` using whatever method want,
+then compile the `.tex` using whatever method you want,
 and finally run
 
     perl -n annotate_pdf.pl INPUT_PDF INPUT_MASK
