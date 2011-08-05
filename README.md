@@ -31,7 +31,7 @@ Requirements
 ------------
 * [perl](http://www.perl.org/get.html)
 * [pdftk](http://www.pdflabs.com/docs/install-pdftk/)
-* [pdfinfo](http://www.foolabs.com/xpdf/) (Part of the xpdf utilities for PDF files)
+* [pdfinfo](http://www.foolabs.com/xpdf/) (part of the xpdf utilities for PDF files)
 * pdflatex
 
 Installation
@@ -44,16 +44,16 @@ The tricky part here is the installation of the requirements, and not the progra
 
 ### Windows
 
-    Download Strawberry Perl [here](http://strawberryperl.com/) and install it.
-    Download `pdftk` [here](http://strawberryperl.com/). To install it, copy
-    the two files (a `.exe` and a `.dll`) to the
-    `C:\WINDOWS\system32\` folder.
-    Download `pdfinfo` from
-    [here](http://www.foolabs.com/xpdf/download.html),
-    and copy `pdfinfo.exe` to the `C:\WINDOWS\system32\` folder.
-    Finally, install a LaTeX distribution such as
-    [Miktex](http://miktex.org/2.9/setup) if you
-    don't already have one.
+Download Strawberry Perl [here](http://strawberryperl.com/) and install it.
+Download `pdftk` [here](http://strawberryperl.com/). To install it, copy
+the two files (a `.exe` and a `.dll`) to the
+`C:\WINDOWS\system32\` folder.
+Download `pdfinfo` from
+[here](http://www.foolabs.com/xpdf/download.html),
+and copy `pdfinfo.exe` to the `C:\WINDOWS\system32\` folder.
+Finally, install a LaTeX distribution such as
+[Miktex](http://miktex.org/2.9/setup) if you
+don't already have one.
     
 Instructions
 ------------
