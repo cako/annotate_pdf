@@ -52,7 +52,7 @@ Download `pdfinfo` from
 [here](http://www.foolabs.com/xpdf/download.html),
 and copy `pdfinfo.exe` to the `C:\WINDOWS\system32\` folder.
 Finally, install a LaTeX distribution such as
-[Miktex](http://miktex.org/2.9/setup) if you
+[MiKTeX](http://miktex.org/2.9/setup) if you
 don't already have one.
     
 Instructions
