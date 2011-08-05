@@ -41,7 +41,6 @@
 #==============================================================================#
 
 use 5.010;
-use strict;
 use warnings;
 use File::Spec;
 use File::Copy;
@@ -66,33 +65,48 @@ my $mask;
 }
 
 # Page numbers
-chomp(my $pages_data = `pdftk '$file' dump_data`);
+my $pages_data;
+if ($^O =~ m/win/i){
+    chomp($pages_data = `pdftk $file dump_data`);
+} else {
+    chomp($pages_data = `pdftk '$file' dump_data`);
+}
 $pages_data =~ /NumberOfPages:\s*(\d+)/;
 my $pages = $1;
-my $regex = 's/numberofpages}{\d*}/numberofpages}{'."$pages}/";
-system "perl -pi -e '$regex' '$mask'";
 
 # Page size
-chomp(my $size_data = `pdfinfo '$file'`);
+my $size_data;
+if ($^O =~ m/win/i){
+    chomp($size_data = `pdfinfo $file`);
+} else {
+    chomp($size_data = `pdfinfo '$file'`);
+}
 # The numbers are (?<width>\d+(\.\d+) and the paper size is (?<paper>\w+)
 $size_data =~ /Page \s size: \s+ (?<width>\d+(\.\d+)?) \s x \s (?<len>\d+(\.\d+)?) \s pts \s+ ( \( (?<paper>\w+) \) )?/x;
 
 my $width = $+{width};
 my $len = $+{len};
+
 my $paper;
 $paper = $+{paper} if $+{paper};
-
-
-$regex = 's/pagewidth}{.*}/pagewidth}{'."$width}/";
-system "perl -pi -e '$regex' '$mask'";
-
-$regex = 's/pagelength}{.*}/pagelength}{'."$len}/";
-system "perl -pi -e '$regex' '$mask'";
-
+my $doc_opts;
 if ($paper_sizes{$paper}){
-    $regex = 's/documentclass(\[?.*\]?){/documentclass'."[$paper_sizes{$paper}]{/";
-    system "perl -pi -e '$regex' '$mask'";
+    $doc_opts = "\[$paper_sizes{$paper}\]"
 } else {
-    $regex = 's/documentclass(\[?.*\]?){/documentclass{/';
-    system "perl -pi -e '$regex' '$mask'";
+    $doc_opts = ""
 }
+
+open MASK_IN, '<', $mask or die "Cannot open file";
+my @mask_in = <MASK_IN>;
+close MASK_IN;
+
+open MASK_OUT, '>', $mask or die "Cannot open file";
+
+for (@mask_in){
+    s/numberofpages\}\{\d*}/numberofpages\}\{$pages\}/g;
+    s/pagewidth\}\{.*}/pagewidth\}\{$width\}/g;
+    s/pagelength\}\{.*}/pagelength\}\{$len\}/;
+    s/documentclass(\[?.*\]?){/documentclass$doc_opts\{/;
+    print MASK_OUT $_;
+}
+close MASK_OUT;
