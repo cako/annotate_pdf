@@ -19,6 +19,7 @@
 \usepackage{amsmath}  
 \usepackage{amssymb}
 \usepackage{boxedminipage}
+\usepackage{tikz}
 \usepackage{xypic}
 \usepackage{hyperref}
 \usepackage{color}
@@ -50,11 +51,18 @@
 % Page 1
 \putonpage{1}{
 
+    %Grid
+    \begin{tikzpicture}
+        \draw[step=1cm, gray, very thin]
+        (0,0) grid (20,29);
+    \end{tikzpicture}
+
     % This will put up a boxed annotation of width 2cm in the top left corner.
     \vspace{0cm} \hspace{0cm}
-     
+
     \begin{boxedminipage}[t]{10cm} 
-    \scriptsize A little annotation for the top left corner! 
+    \scriptsize A little annotation for the top left corner
+
     \end{boxedminipage}
 
     % This will put a boxed diagram at the bottom of the first page.
